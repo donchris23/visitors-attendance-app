@@ -14,16 +14,16 @@ const getBaseUrl = () => {
   
   console.log('Is Production:', isProduction);
   
-  // If in production and no BASE_URL is set, use the Railway URL
+  // If in production and no BASE_URL is set, use the new Railway URL
   if (isProduction && !process.env.BASE_URL) {
     console.log('Using default Railway URL');
-    return 'https://visitors-attendance-app-production.up.railway.app';
+    return 'https://may-baker-attendance.up.railway.app'; // No trailing slash
   }
   
-  const baseUrl = process.env.BASE_URL || 'visitors-attendance-app-production.up.railway.app';
+  const baseUrl = process.env.BASE_URL || 'may-baker-attendance.up.railway.app';
   if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
     console.log('Using BASE_URL with protocol:', baseUrl);
-    return baseUrl;
+    return baseUrl.replace(/\/$/, ''); // Remove trailing slash if present
   }
   const finalUrl = `https://${baseUrl}`;
   console.log('Using BASE_URL with added protocol:', finalUrl);
