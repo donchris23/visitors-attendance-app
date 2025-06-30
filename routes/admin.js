@@ -29,15 +29,15 @@ router.get('/', isAdmin, async (req, res) => {
     console.log('Loading admin dashboard...');
     
     // Test database connection first
-    const [testResult] = await db.promise().query('SELECT 1 as test');
+    const [testResult] = await db.query('SELECT 1 as test');
     console.log('Database connection test:', testResult);
     
     // Check if tables exist
-    const [tables] = await db.promise().query('SHOW TABLES');
+    const [tables] = await db.query('SHOW TABLES');
     console.log('Available tables:', tables);
     
     // Get recent visits with visitor details
-    const [visits] = await db.promise().query(`
+    const [visits] = await db.query(`
       SELECT 
         v.name as visitor_name,
         v.email as visitor_email,
@@ -69,7 +69,7 @@ router.get('/', isAdmin, async (req, res) => {
     console.log('Visits data:', visits);
 
     // Get statistics
-    const [stats] = await db.promise().query(`
+    const [stats] = await db.query(`
       SELECT 
         COUNT(*) as total_visits,
         SUM(CASE WHEN status = 'allowed' THEN 1 ELSE 0 END) as approved_visits,
@@ -81,7 +81,7 @@ router.get('/', isAdmin, async (req, res) => {
     console.log('Stats loaded:', stats[0]);
 
     // Get today's visits
-    const [todayVisits] = await db.promise().query(`
+    const [todayVisits] = await db.query(`
       SELECT COUNT(*) as today_count
       FROM visits 
       WHERE DATE(visit_time) = CURDATE()
@@ -151,7 +151,7 @@ router.get('/simple', isAdmin, async (req, res) => {
     console.log('Testing simple dashboard template...');
     
     // Get real data but use simple template
-    const [visits] = await db.promise().query(`
+    const [visits] = await db.query(`
       SELECT 
         v.name as visitor_name,
         v.email as visitor_email,
@@ -167,7 +167,7 @@ router.get('/simple', isAdmin, async (req, res) => {
       LIMIT 10
     `);
 
-    const [stats] = await db.promise().query(`
+    const [stats] = await db.query(`
       SELECT 
         COUNT(*) as total_visits,
         SUM(CASE WHEN status = 'allowed' THEN 1 ELSE 0 END) as approved_visits,
@@ -176,7 +176,7 @@ router.get('/simple', isAdmin, async (req, res) => {
       FROM visits
     `);
 
-    const [todayVisits] = await db.promise().query(`
+    const [todayVisits] = await db.query(`
       SELECT COUNT(*) as today_count
       FROM visits 
       WHERE DATE(visit_time) = CURDATE()
@@ -354,7 +354,7 @@ router.post('/visit/:id/tag', isAdmin, async (req, res) => {
   }
   try {
     // Only allow if status is 'allowed' and tag_number is NULL
-    const [rows] = await db.promise().query(
+    const [rows] = await db.query(
       'SELECT status, tag_number FROM visits WHERE id = ?',
       [visitId]
     );
@@ -368,7 +368,7 @@ router.post('/visit/:id/tag', isAdmin, async (req, res) => {
     if (visit.tag_number) {
       return res.status(400).json({ success: false, message: 'Tag number already set.' });
     }
-    await db.promise().query(
+    await db.query(
       'UPDATE visits SET tag_number = ? WHERE id = ?',
       [tag_number, visitId]
     );
@@ -382,10 +382,10 @@ router.post('/visit/:id/tag', isAdmin, async (req, res) => {
 // Staff management - list, add, edit
 router.get('/staff', isAdmin, async (req, res) => {
   try {
-    const [staff] = await db.promise().query('SELECT * FROM staff ORDER BY name ASC');
+    const [staff] = await db.query('SELECT * FROM staff ORDER BY name ASC');
     let formData = null;
     if (req.query.edit) {
-      const [editStaff] = await db.promise().query('SELECT * FROM staff WHERE id = ?', [req.query.edit]);
+      const [editStaff] = await db.query('SELECT * FROM staff WHERE id = ?', [req.query.edit]);
       if (editStaff.length > 0) formData = editStaff[0];
     }
     res.render('admin/staff', { staff, formData, errors: [] });
@@ -401,15 +401,15 @@ router.post('/staff', isAdmin, async (req, res) => {
   const errors = [];
   if (!name || !email) errors.push({ msg: 'Name and email are required.' });
   if (errors.length) {
-    const [staff] = await db.promise().query('SELECT * FROM staff ORDER BY name ASC');
+    const [staff] = await db.query('SELECT * FROM staff ORDER BY name ASC');
     return res.render('admin/staff', { staff, formData: req.body, errors });
   }
   try {
-    await db.promise().query('INSERT INTO staff (name, email) VALUES (?, ?)', [name, email]);
+    await db.query('INSERT INTO staff (name, email) VALUES (?, ?)', [name, email]);
     res.redirect('/admin/staff');
   } catch (error) {
     errors.push({ msg: error.code === 'ER_DUP_ENTRY' ? 'Email already exists.' : error.message });
-    const [staff] = await db.promise().query('SELECT * FROM staff ORDER BY name ASC');
+    const [staff] = await db.query('SELECT * FROM staff ORDER BY name ASC');
     res.render('admin/staff', { staff, formData: req.body, errors });
   }
 });
@@ -421,15 +421,15 @@ router.post('/staff/:id', isAdmin, async (req, res) => {
   const errors = [];
   if (!name || !email) errors.push({ msg: 'Name and email are required.' });
   if (errors.length) {
-    const [staff] = await db.promise().query('SELECT * FROM staff ORDER BY name ASC');
+    const [staff] = await db.query('SELECT * FROM staff ORDER BY name ASC');
     return res.render('admin/staff', { staff, formData: { id, name, email }, errors });
   }
   try {
-    await db.promise().query('UPDATE staff SET name = ?, email = ? WHERE id = ?', [name, email, id]);
+    await db.query('UPDATE staff SET name = ?, email = ? WHERE id = ?', [name, email, id]);
     res.redirect('/admin/staff');
   } catch (error) {
     errors.push({ msg: error.code === 'ER_DUP_ENTRY' ? 'Email already exists.' : error.message });
-    const [staff] = await db.promise().query('SELECT * FROM staff ORDER BY name ASC');
+    const [staff] = await db.query('SELECT * FROM staff ORDER BY name ASC');
     res.render('admin/staff', { staff, formData: { id, name, email }, errors });
   }
 });
@@ -438,7 +438,7 @@ router.post('/staff/:id', isAdmin, async (req, res) => {
 router.post('/staff/:id/delete', isAdmin, async (req, res) => {
   const { id } = req.params;
   try {
-    await db.promise().query('DELETE FROM staff WHERE id = ?', [id]);
+    await db.query('DELETE FROM staff WHERE id = ?', [id]);
     res.redirect('/admin/staff');
   } catch (error) {
     console.error('Error deleting staff:', error);

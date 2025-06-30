@@ -5,7 +5,7 @@ async function setupRailwayDatabase() {
     console.log('Setting up Railway database tables...');
     
     // Create staff table
-    await db.promise().query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS staff (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -19,7 +19,7 @@ async function setupRailwayDatabase() {
     console.log('✅ Staff table created/verified');
     
     // Create visitors table
-    await db.promise().query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS visitors (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -35,7 +35,7 @@ async function setupRailwayDatabase() {
     console.log('✅ Visitors table created/verified');
     
     // Create visits table
-    await db.promise().query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS visits (
         id INT AUTO_INCREMENT PRIMARY KEY,
         visitor_id INT NOT NULL,
@@ -54,12 +54,12 @@ async function setupRailwayDatabase() {
     console.log('✅ Visits table created/verified');
     
     // Test the staff table
-    const [staffCount] = await db.promise().query('SELECT COUNT(*) as count FROM staff');
+    const [staffCount] = await db.query('SELECT COUNT(*) as count FROM staff');
     console.log(`📊 Staff table has ${staffCount[0].count} records`);
     
     // Add a sample staff member if table is empty
     if (staffCount[0].count === 0) {
-      await db.promise().execute(
+      await db.execute(
         'INSERT INTO staff (name, email) VALUES (?, ?)',
         ['Sample Staff', 'staff@example.com']
       );

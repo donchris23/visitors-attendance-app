@@ -103,7 +103,7 @@ module.exports = (io) => {
       LIMIT 5
     `;
       const searchQuery = `%${query}%`;
-      const [results] = await db.promise().query(sql, [searchQuery, searchQuery]);
+      const [results] = await db.query(sql, [searchQuery, searchQuery]);
       res.json(results);
     } catch (error) {
       console.error('Search error:', error);
@@ -120,7 +120,6 @@ module.exports = (io) => {
       }
 
       const [staff] = await db
-        .promise()
         .query('SELECT name, email FROM staff WHERE name LIKE ? LIMIT 5', [
           `%${query}%`,
         ]);
@@ -222,7 +221,6 @@ module.exports = (io) => {
 
           // Check if visitor already exists
           const [existingVisitor] = await db
-            .promise()
             .query('SELECT id FROM visitors WHERE email = ?', [email]);
           console.log('Existing visitor check:', existingVisitor);
 
@@ -232,7 +230,6 @@ module.exports = (io) => {
             console.log('Updating existing visitor:', visitorId);
             // Update visitor info
             await db
-              .promise()
               .query(
                 'UPDATE visitors SET name = ?, phone = ?, photo_path = ?, company_name = ?, company_address = ? WHERE id = ?',
                 [
@@ -248,7 +245,6 @@ module.exports = (io) => {
             console.log('Creating new visitor');
             // Create new visitor
             const [result] = await db
-              .promise()
               .query(
                 'INSERT INTO visitors(name, email, phone, photo_path, company_name, company_address) VALUES (?, ?, ?, ?, ?, ?)',
                 [
@@ -267,7 +263,6 @@ module.exports = (io) => {
           // Create visit record
           console.log('Creating visit record');
           const [visitResult] = await db
-            .promise()
             .query(
               'INSERT INTO visits(visitor_id, staff_email, reason, visitor_type) VALUES (?, ?, ?, ?)',
               [visitorId, staff_email, reason, visitorType]
@@ -277,7 +272,6 @@ module.exports = (io) => {
           // Insert type-specific details
           if (visitorType === 'contractor') {
             await db
-              .promise()
               .query(
                 'INSERT INTO contractor_visit_details(visit_id, work_site, project_detail, supervising_department) VALUES (?, ?, ?, ?)',
                 [
@@ -289,7 +283,6 @@ module.exports = (io) => {
               );
           } else if (visitorType === 'supplier') {
             await db
-              .promise()
               .query(
                 'INSERT INTO supplier_visit_details(visit_id, material_supplied, receiving_department) VALUES (?, ?, ?)',
                 [
@@ -400,7 +393,6 @@ module.exports = (io) => {
 
         // Verify visitor exists
         const [visitor] = await db
-          .promise()
           .query('SELECT name, email, phone, photo_path FROM visitors WHERE id = ?', [
             visitor_id,
           ]);
@@ -411,7 +403,6 @@ module.exports = (io) => {
 
         // Create visit record
         await db
-          .promise()
           .query(
             'INSERT INTO visits(visitor_id, staff_email, reason) VALUES (?, ?, ?)',
             [visitor_id, staff_email, reason]
@@ -506,14 +497,13 @@ module.exports = (io) => {
 
       // Update visit status
       await db
-        .promise()
         .query(
           'UPDATE visits SET status = ? WHERE id = (SELECT id FROM (SELECT id FROM visits WHERE staff_email = ? ORDER BY id DESC LIMIT 1) AS sub)',
           [status, email]
         );
 
       // Get visitor details to send notification
-      const [visitDetails] = await db.promise().query(
+      const [visitDetails] = await db.query(
         `
       SELECT v.name, v.email, v.phone, vs.reason, vs.staff_email
       FROM visits vs 
@@ -587,7 +577,7 @@ module.exports = (io) => {
   // Dashboard (protected route)
   router.get('/dashboard', async (req, res) => {
     try {
-      const [visits] = await db.promise().query(`
+      const [visits] = await db.query(`
       SELECT 
         v.name,
         v.email,

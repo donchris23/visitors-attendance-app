@@ -5,13 +5,13 @@ async function checkDatabase() {
     console.log('Checking database tables...');
     
     // Check if staff table exists
-    const [tables] = await db.promise().query('SHOW TABLES LIKE "staff"');
+    const [tables] = await db.query('SHOW TABLES LIKE "staff"');
     
     if (tables.length === 0) {
       console.log('Staff table does not exist. Creating it...');
       
       // Create staff table
-      await db.promise().query(`
+      await db.query(`
         CREATE TABLE IF NOT EXISTS staff (
           id INT AUTO_INCREMENT PRIMARY KEY,
           name VARCHAR(100) NOT NULL,
@@ -29,13 +29,13 @@ async function checkDatabase() {
     }
     
     // Check if visitors table exists
-    const [visitorTables] = await db.promise().query('SHOW TABLES LIKE "visitors"');
+    const [visitorTables] = await db.query('SHOW TABLES LIKE "visitors"');
     
     if (visitorTables.length === 0) {
       console.log('Visitors table does not exist. Creating it...');
       
       // Create visitors table
-      await db.promise().query(`
+      await db.query(`
         CREATE TABLE IF NOT EXISTS visitors (
           id INT AUTO_INCREMENT PRIMARY KEY,
           name VARCHAR(100) NOT NULL,
@@ -55,13 +55,13 @@ async function checkDatabase() {
     }
     
     // Check if visits table exists
-    const [visitTables] = await db.promise().query('SHOW TABLES LIKE "visits"');
+    const [visitTables] = await db.query('SHOW TABLES LIKE "visits"');
     
     if (visitTables.length === 0) {
       console.log('Visits table does not exist. Creating it...');
       
       // Create visits table
-      await db.promise().query(`
+      await db.query(`
         CREATE TABLE IF NOT EXISTS visits (
           id INT AUTO_INCREMENT PRIMARY KEY,
           visitor_id INT NOT NULL,
@@ -87,7 +87,7 @@ async function checkDatabase() {
     // Apply schema changes for visitor types
     console.log('Checking for visitor type schema changes...');
 
-    const connection = db.promise();
+    const connection = db;
 
     // Check for company_name and company_address in visitors
     const [companyCols] = await connection.query("SHOW COLUMNS FROM visitors LIKE 'company_name'");
@@ -146,7 +146,7 @@ async function checkDatabase() {
     }
     
     // Test query to staff table
-    const [staff] = await db.promise().query('SELECT COUNT(*) as count FROM staff');
+    const [staff] = await db.query('SELECT COUNT(*) as count FROM staff');
     console.log(`Staff table has ${staff[0].count} records.`);
     
     console.log('Database check completed successfully!');
