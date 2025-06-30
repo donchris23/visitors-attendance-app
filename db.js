@@ -20,11 +20,11 @@ db.connect((err) => {
 module.exports = db;
 
 const connection = mysql.createConnection({
-  host: 'turntable.proxy.rlwy.net',
+  host: 'metro.proxy.rlwy.net',
   user: 'root',
-  password: 'ACIWmPfhAdIdiZjlSDaaLCMBZDbRCksA',
+  password: 'sIQqQeXGpMnCjulennZMruyDOvLvfsIh',
   database: 'railway',
-  port: 34817,
+  port: 24535,
 });
 
 connection.connect((err) => {
