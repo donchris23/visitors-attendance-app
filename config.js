@@ -32,11 +32,11 @@ const getBaseUrl = () => {
 
 module.exports = {
   db: {
-    host: process.env.DB_HOST || 'tramway.proxy.rlwy.net',
+    host: process.env.DB_HOST || 'metro.proxy.rlwy.net',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'qmXVvvEmWvavzTdcXiFdjqvILiVWWmMz',
+    password: process.env.DB_PASSWORD || 'sIQqQeXGpMnCjulennZMruyDOvLvfsIh',
     database: process.env.DB_NAME || 'railway',
-    port: process.env.DB_PORT || 27380
+    port: process.env.DB_PORT || 24535
   },
   server: {
     port: process.env.PORT || 3000
