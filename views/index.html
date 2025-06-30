@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visitor Registration | Welcome</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/webcam.css" rel="stylesheet">
+  <style>
+    /* Watermark effect using a pseudo-element for better control */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('/images.png') no-repeat center center;
+      background-size: 60%;
+      opacity: 0.15; /* Increased opacity for testing */
+      pointer-events: none;
+      z-index: 0;
+    }
+    .max-w-lg.mx-auto, .bg-white {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Alternative watermark approach */
+    .watermark-container {
+      position: relative;
+    }
+    .watermark-container::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('/images.png') no-repeat center center;
+      background-size: 60%;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8" style="font-family: 'Inter', sans-serif;">
+  <div class="max-w-lg mx-auto watermark-container">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-2">Visitor Registration</h2>
+      <p class="text-gray-600">Please fill in your details below</p>
+    </div>
+
+    <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+      <div class="p-8">
+        <!-- Search for returning visitors -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Returning Visitor?</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="visitorSearch" 
+              placeholder="Search by name or email" 
+              class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+            <div id="searchResults" class="absolute z-10 w-full bg-white mt-1 rounded-md shadow-lg hidden"></div>
+          </div>
+        </div>
+
+        <!-- New Visitor Form -->
+        <form id="newVisitorForm" method="POST" action="/visitor/register/new" class="space-y-6 hidden">
+          <!-- Visitor Type Dropdown -->
+          <div>
+            <label for="visitorType" class="block text-sm font-medium text-gray-700 mb-1">Visitor Type</label>
+            <select id="visitorType" name="visitorType" required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Select type</option>
+              <option value="visitor">Visitor</option>
+              <option value="contractor">Contractor</option>
+              <option value="supplier">Supplier</option>
+            </select>
+          </div>
+
+          <!-- Visitor Questions -->
+          <div id="visitorQuestions" class="dummy-questions">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Company's Name</label>
+            <input type="text" name="visitor_company_name" placeholder="Enter your company's name" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Company's Address</label>
+            <input type="text" name="visitor_company_address" placeholder="Enter your company's address" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+
+          <!-- Contractor Questions -->
+          <div id="contractorQuestions" class="dummy-questions hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Company's Name</label>
+            <input type="text" name="contractor_company_name" placeholder="Enter your company's name" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Company's Address</label>
+            <input type="text" name="contractor_company_address" placeholder="Enter your company's address" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Work Site</label>
+            <input type="text" name="contractor_work_site" placeholder="Enter the work site" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Project Detail</label>
+            <input type="text" name="contractor_project_detail" placeholder="Enter project details" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Supervising Department</label>
+            <input type="text" name="contractor_supervising_department" placeholder="Enter supervising department" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+
+          <!-- Supplier Questions -->
+          <div id="supplierQuestions" class="dummy-questions hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Company's Name</label>
+            <input type="text" name="supplier_company_name" placeholder="Enter your company's name" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Company's Address</label>
+            <input type="text" name="supplier_company_address" placeholder="Enter your company's address" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Material Supplied</label>
+            <input type="text" name="supplier_material_supplied" placeholder="Enter material supplied" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Receiving Department</label>
+            <input type="text" name="supplier_receiving_department" placeholder="Enter receiving department" class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+
+          <!-- Webcam Component -->
+          <div class="webcam-container">
+            <video id="webcam" class="webcam-video" autoplay playsinline></video>
+            <canvas id="canvas" class="webcam-canvas"></canvas>
+            <div class="mt-4">
+              <button type="button" id="captureBtn" class="webcam-button capture-button">Take Photo</button>
+              <button type="button" id="retakeBtn" class="webcam-button retake-button">Retake Photo</button>
+            </div>
+            <div id="webcamError" class="webcam-error">
+              Unable to access webcam. Please ensure you have given camera permissions.
+            </div>
+          </div>
+
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input 
+              id="name"
+              name="name" 
+              type="text" 
+              required 
+              minlength="2"
+              placeholder="Enter your full name"
+              class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+            <p class="mt-1 text-sm text-gray-500">Minimum 2 characters</p>
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input 
+              id="email"
+              name="email" 
+              type="email" 
+              required 
+              placeholder="you@example.com"
+              class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+          </div>
+
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input 
+              id="phone"
+              name="phone" 
+              type="tel" 
+              required 
+              minlength="10"
+              pattern="[0-9+\-\s()]+"
+              placeholder="Enter your phone number"
+              class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+            <p class="mt-1 text-sm text-gray-500">Enter at least 10 digits</p>
+          </div>
+
+          <div>
+            <label for="staff_name" class="block text-sm font-medium text-gray-700 mb-1">Staff Name</label>
+            <div class="relative">
+              <input 
+                id="staff_name"
+                type="text" 
+                required 
+                placeholder="Enter staff name"
+                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+              <input 
+                id="staff_email"
+                name="staff_email" 
+                type="hidden" 
+                required
+              >
+              <div id="staffSearchResults" class="absolute z-10 w-full bg-white mt-1 rounded-md shadow-lg hidden">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
+            <textarea 
+              id="reason"
+              name="reason" 
+              required 
+              minlength="5"
+              rows="4"
+              placeholder="Please describe the purpose of your visit"
+              class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            ></textarea>
+            <p class="mt-1 text-sm text-gray-500">Minimum 5 characters</p>
+          </div>
+
+          <div class="pt-2">
+            <button 
+              type="submit"
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Register as New Visitor
+            </button>
+          </div>
+        </form>
+
+        <!-- Returning Visitor Form -->
+        <form id="returningVisitorForm" method="POST" action="/visitor/register/returning" class="space-y-6 hidden">
+          <input type="hidden" id="visitor_id" name="visitor_id">
+          
+          <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <h3 class="font-medium text-gray-900" id="visitor_name"></h3>
+            <p class="text-gray-600 text-sm" id="visitor_email"></p>
+            <p class="text-gray-600 text-sm" id="visitor_phone"></p>
+            <p class="text-gray-600 text-sm" id="visitor_type"></p>
+            <p class="text-gray-600 text-sm" id="visitor_company"></p>
+          </div>
+
+          <div>
+            <label for="returning_staff_name" class="block text-sm font-medium text-gray-700 mb-1">Staff Name</label>
+            <div class="relative">
+              <input 
+                id="returning_staff_name"
+                type="text" 
+                required 
+                placeholder="Enter staff name"
+                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+              <input 
+                id="returning_staff_email"
+                name="staff_email" 
+                type="hidden" 
+                required
+              >
+              <div id="returningStaffSearchResults" class="absolute z-10 w-full bg-white mt-1 rounded-md shadow-lg hidden">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="returning_reason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
+            <textarea 
+              id="returning_reason"
+              name="reason" 
+              required 
+              rows="4"
+              placeholder="Please describe the purpose of your visit"
+              class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            ></textarea>
+          </div>
+
+          <div class="pt-2">
+            <button 
+              type="submit"
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Submit Visit Request
+            </button>
+          </div>
+        </form>
+
+        <!-- New Visitor Button -->
+        <div id="newVisitorButton" class="mt-4 text-center">
+          <button 
+            onclick="showNewVisitorForm()"
+            class="text-blue-600 hover:text-blue-800 font-medium"
+          >
+            Not found? Register as a new visitor
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/webcam.js"></script>
+  <script>
+    const searchInput = document.getElementById('visitorSearch');
+    const searchResults = document.getElementById('searchResults');
+    const newVisitorForm = document.getElementById('newVisitorForm');
+    const returningVisitorForm = document.getElementById('returningVisitorForm');
+    const newVisitorButton = document.getElementById('newVisitorButton');
+    let debounceTimer;
+    let webcamCapture;
+
+    // Initialize webcam when showing new visitor form
+    function showNewVisitorForm() {
+      newVisitorForm.classList.remove('hidden');
+      returningVisitorForm.classList.add('hidden');
+      newVisitorButton.classList.add('hidden');
+      searchInput.value = '';
+      searchResults.classList.add('hidden');
+
+      // Initialize webcam
+      if (!webcamCapture) {
+        webcamCapture = new WebcamCapture(
+          document.getElementById('webcam'),
+          document.getElementById('canvas'),
+          document.getElementById('captureBtn'),
+          document.getElementById('retakeBtn')
+        );
+      }
+    }
+
+    searchInput.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      const query = this.value.trim();
+      
+      if (query.length < 2) {
+        searchResults.innerHTML = '';
+        searchResults.classList.add('hidden');
+        return;
+      }
+
+      debounceTimer = setTimeout(async () => {
+        try {
+          const response = await fetch(`/visitor/search?query=${encodeURIComponent(query)}`);
+          const data = await response.json();
+          
+          if (data.length > 0) {
+            searchResults.innerHTML = data.map(visitor => `
+              <div class="p-3 hover:bg-gray-100 cursor-pointer" onclick='fillVisitorData(${JSON.stringify(visitor).replace(/"/g, '&quot;')})'>
+                <div class="font-medium">${visitor.name}</div>
+                <div class="text-sm text-gray-600">${visitor.email}</div>
+              </div>
+            `).join('');
+            searchResults.classList.remove('hidden');
+          } else {
+            searchResults.innerHTML = '<div class="p-3 text-gray-500">No matching visitors found</div>';
+            searchResults.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Search failed:', error);
+        }
+      }, 300);
+    });
+
+    function fillVisitorData(visitor) {
+      console.log('Filling visitor data:', visitor);
+      console.log('Visitor ID:', visitor.id);
+      document.getElementById('visitor_id').value = visitor.id;
+      document.getElementById('visitor_name').textContent = visitor.name;
+      document.getElementById('visitor_email').textContent = visitor.email;
+      document.getElementById('visitor_phone').textContent = visitor.phone;
+      let typeLabel = '';
+      if (visitor.visitor_type === 'contractor') typeLabel = 'Contractor';
+      else if (visitor.visitor_type === 'supplier') typeLabel = 'Supplier';
+      else typeLabel = 'Visitor';
+      document.getElementById('visitor_type').textContent = 'Type: ' + typeLabel;
+      document.getElementById('visitor_company').textContent = visitor.company_name ? ('Company: ' + visitor.company_name) : '';
+      // Verify the visitor_id was set
+      console.log('visitor_id field value after setting:', document.getElementById('visitor_id').value);
+      newVisitorForm.classList.add('hidden');
+      returningVisitorForm.classList.remove('hidden');
+      searchResults.classList.add('hidden');
+      newVisitorButton.classList.remove('hidden');
+    }
+
+    // Close search results when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!searchResults.contains(e.target) && e.target !== searchInput) {
+        searchResults.classList.add('hidden');
+      }
+    });
+
+    // Modify form submission to include photo
+    [newVisitorForm, returningVisitorForm].forEach(form => {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Additional validation for returning visitor form
+        if (this.id === 'returningVisitorForm') {
+          const staffEmail = document.getElementById('returning_staff_email').value;
+          const staffName = document.getElementById('returning_staff_name').value;
+          
+          if (!staffEmail || staffEmail.trim() === '') {
+            alert('Please select a staff member from the dropdown list.');
+            return;
+          }
+          
+          if (!staffName || staffName.trim() === '') {
+            alert('Please enter and select a staff member.');
+            return;
+          }
+        }
+        
+        const formData = new FormData(this);
+
+        // Add photo data if it's the new visitor form and photo is taken
+        if (this.id === 'newVisitorForm' && webcamCapture) {
+          const photoData = webcamCapture.getImageData();
+          if (!photoData) {
+            alert('Please take a photo before submitting.');
+            return;
+          }
+          formData.append('photo', photoData);
+        }
+
+        try {
+          console.log('Form data being sent:', Object.fromEntries(formData));
+          console.log('Form action:', this.action);
+          console.log('Form method:', this.method);
+          
+          // Log individual form fields for debugging
+          console.log('visitor_id:', formData.get('visitor_id'));
+          console.log('reason:', formData.get('reason'));
+          console.log('staff_email:', formData.get('staff_email'));
+          
+          const response = await fetch(this.action, {
+            method: 'POST',
+            body: formData  // Send formData directly without URLSearchParams
+          });
+
+          const result = await response.json();
+          console.log('Server response:', result);
+          
+          if (result.success) {
+            alert('Registration successful! The staff member will be notified.');
+            
+            // Clear form fields manually instead of using form.reset()
+            if (this.id === 'newVisitorForm') {
+              this.reset();
+              if (webcamCapture) {
+                webcamCapture.retakePhoto();
+              }
+            } else {
+              // For returning visitor form, clear specific fields
+              document.getElementById('visitor_id').value = '';
+              document.getElementById('returning_staff_name').value = '';
+              document.getElementById('returning_staff_email').value = '';
+              document.getElementById('returning_reason').value = '';
+              document.getElementById('visitor_name').textContent = '';
+              document.getElementById('visitor_email').textContent = '';
+              document.getElementById('visitor_phone').textContent = '';
+              document.getElementById('visitor_type').textContent = '';
+              document.getElementById('visitor_company').textContent = '';
+              
+              // Remove visual feedback
+              const successIndicator = document.querySelector('.success-indicator');
+              if (successIndicator) {
+                successIndicator.remove();
+              }
+              returningStaffNameInput.style.backgroundColor = '';
+              returningStaffNameInput.style.borderColor = '';
+            }
+            
+            location.reload();
+          } else {
+            let errorMessage = 'Registration failed. ';
+            if (result.errors && result.errors.length > 0) {
+              errorMessage += result.errors.map(e => e.msg).join('\n');
+            } else if (result.error) {
+              errorMessage += result.error;
+            } else {
+              errorMessage += 'Please try again.';
+            }
+            alert(errorMessage);
+          }
+        } catch (error) {
+          console.error('Submission error:', error);
+          alert('An error occurred. Please try again.');
+        }
+      });
+    });
+
+    // Staff search functionality
+    const staffNameInput = document.getElementById('staff_name');
+    const staffEmailInput = document.getElementById('staff_email');
+    const staffSearchResults = document.getElementById('staffSearchResults');
+    let staffDebounceTimer;
+
+    staffNameInput.addEventListener('input', function() {
+      clearTimeout(staffDebounceTimer);
+      const query = this.value.trim();
+      
+      if (query.length < 2) {
+        staffSearchResults.innerHTML = '';
+        staffSearchResults.classList.add('hidden');
+        staffEmailInput.value = '';
+        return;
+      }
+
+      staffDebounceTimer = setTimeout(async () => {
+        try {
+          const response = await fetch(`/visitor/search-staff?query=${encodeURIComponent(query)}`);
+          const data = await response.json();
+          
+          if (data.length > 0) {
+            staffSearchResults.innerHTML = data.map(staff => `
+              <div class="p-3 hover:bg-gray-100 cursor-pointer" onclick='selectStaff(${JSON.stringify(staff).replace(/"/g, '&quot;')})'>
+                <div class="font-medium">${staff.name}</div>
+                <div class="text-sm text-gray-600">${staff.email}</div>
+              </div>
+            `).join('');
+            staffSearchResults.classList.remove('hidden');
+          } else {
+            staffSearchResults.innerHTML = '<div class="p-3 text-gray-500">No matching staff found</div>';
+            staffSearchResults.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Staff search failed:', error);
+        }
+      }, 300);
+    });
+
+    function selectStaff(staff) {
+      staffNameInput.value = staff.name;
+      staffEmailInput.value = staff.email;
+      staffSearchResults.classList.add('hidden');
+      
+      // Add visual feedback
+      staffNameInput.style.backgroundColor = '#f0f9ff';
+      staffNameInput.style.borderColor = '#3b82f6';
+      
+      // Add a small checkmark or success indicator
+      const successIndicator = document.createElement('span');
+      successIndicator.innerHTML = ' ✓';
+      successIndicator.style.color = '#10b981';
+      successIndicator.style.fontWeight = 'bold';
+      
+      // Remove any existing indicator
+      const existingIndicator = staffNameInput.parentNode.querySelector('.success-indicator');
+      if (existingIndicator) {
+        existingIndicator.remove();
+      }
+      
+      successIndicator.className = 'success-indicator';
+      staffNameInput.parentNode.appendChild(successIndicator);
+    }
+
+    // Close staff search results when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!staffSearchResults.contains(e.target) && e.target !== staffNameInput) {
+        staffSearchResults.classList.add('hidden');
+      }
+    });
+
+    // Returning visitor staff search functionality
+    const returningStaffNameInput = document.getElementById('returning_staff_name');
+    const returningStaffEmailInput = document.getElementById('returning_staff_email');
+    const returningStaffSearchResults = document.getElementById('returningStaffSearchResults');
+    let returningStaffDebounceTimer;
+
+    returningStaffNameInput.addEventListener('input', function() {
+      clearTimeout(returningStaffDebounceTimer);
+      const query = this.value.trim();
+      
+      if (query.length < 2) {
+        returningStaffSearchResults.innerHTML = '';
+        returningStaffSearchResults.classList.add('hidden');
+        returningStaffEmailInput.value = '';
+        return;
+      }
+
+      returningStaffDebounceTimer = setTimeout(async () => {
+        try {
+          const response = await fetch(`/visitor/search-staff?query=${encodeURIComponent(query)}`);
+          const data = await response.json();
+          
+          if (data.length > 0) {
+            returningStaffSearchResults.innerHTML = data.map(staff => `
+              <div class="p-3 hover:bg-gray-100 cursor-pointer" onclick='selectReturningStaff(${JSON.stringify(staff).replace(/"/g, '&quot;')})'>
+                <div class="font-medium">${staff.name}</div>
+                <div class="text-sm text-gray-600">${staff.email}</div>
+              </div>
+            `).join('');
+            returningStaffSearchResults.classList.remove('hidden');
+          } else {
+            returningStaffSearchResults.innerHTML = '<div class="p-3 text-gray-500">No matching staff found</div>';
+            returningStaffSearchResults.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Returning staff search failed:', error);
+        }
+      }, 300);
+    });
+
+    function selectReturningStaff(staff) {
+      console.log('Selecting returning staff:', staff);
+      console.log('Staff email:', staff.email);
+      
+      returningStaffNameInput.value = staff.name;
+      returningStaffEmailInput.value = staff.email;
+      returningStaffSearchResults.classList.add('hidden');
+      
+      // Verify the staff email was set
+      console.log('returning_staff_email field value after setting:', document.getElementById('returning_staff_email').value);
+      
+      // Add visual feedback
+      returningStaffNameInput.style.backgroundColor = '#f0f9ff';
+      returningStaffNameInput.style.borderColor = '#3b82f6';
+      
+      // Add a small checkmark or success indicator
+      const successIndicator = document.createElement('span');
+      successIndicator.innerHTML = ' ✓';
+      successIndicator.style.color = '#10b981';
+      successIndicator.style.fontWeight = 'bold';
+      
+      // Remove any existing indicator
+      const existingIndicator = returningStaffNameInput.parentNode.querySelector('.success-indicator');
+      if (existingIndicator) {
+        existingIndicator.remove();
+      }
+      
+      successIndicator.className = 'success-indicator';
+      returningStaffNameInput.parentNode.appendChild(successIndicator);
+    }
+
+    // Close returning staff search results when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!returningStaffSearchResults.contains(e.target) && e.target !== returningStaffNameInput) {
+        returningStaffSearchResults.classList.add('hidden');
+      }
+    });
+
+    // Visitor Type dynamic questions
+    document.getElementById('visitorType').addEventListener('change', function() {
+      // Hide all question sections first
+      document.getElementById('visitorQuestions').classList.add('hidden');
+      document.getElementById('contractorQuestions').classList.add('hidden');
+      document.getElementById('supplierQuestions').classList.add('hidden');
+      
+      // Remove required attribute from all fields
+      const allFields = document.querySelectorAll('#visitorQuestions input, #contractorQuestions input, #supplierQuestions input');
+      allFields.forEach(field => field.removeAttribute('required'));
+      
+      // Show and make required the fields for the selected type
+      if (this.value === 'visitor') {
+        document.getElementById('visitorQuestions').classList.remove('hidden');
+        const visitorFields = document.querySelectorAll('#visitorQuestions input');
+        visitorFields.forEach(field => field.setAttribute('required', 'required'));
+      } else if (this.value === 'contractor') {
+        document.getElementById('contractorQuestions').classList.remove('hidden');
+        const contractorFields = document.querySelectorAll('#contractorQuestions input');
+        contractorFields.forEach(field => field.setAttribute('required', 'required'));
+      } else if (this.value === 'supplier') {
+        document.getElementById('supplierQuestions').classList.remove('hidden');
+        const supplierFields = document.querySelectorAll('#supplierQuestions input');
+        supplierFields.forEach(field => field.setAttribute('required', 'required'));
+      }
+    });
+  </script>
+</body>
+</html>
