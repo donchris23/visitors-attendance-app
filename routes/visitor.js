@@ -600,5 +600,20 @@ module.exports = (io) => {
     }
   });
 
+  // Visitor checkout route
+  router.post('/checkout/:id', async (req, res) => {
+    try {
+      const visitId = req.params.id;
+      await db.query(
+        'UPDATE visits SET check_out_time = NOW() WHERE id = ?',
+        [visitId]
+      );
+      res.redirect('back');
+    } catch (error) {
+      console.error('Checkout error:', error);
+      res.status(500).send('Failed to check out visitor.');
+    }
+  });
+
   return router;
 };
