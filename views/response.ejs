@@ -8,7 +8,7 @@
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4" style="font-family: 'Inter', sans-serif;">
   <div class="max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden">
     <div class="p-8 text-center">
-      <% if (status == 'allowed') { %>
+      <% if (status == 'APPROVED') { %>
         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
           <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -16,7 +16,7 @@
         </div>
         <h2 class="text-2xl font-bold text-gray-900 mb-2">Visit Approved</h2>
         <p class="text-gray-600">You have approved the visitor's request. They will be notified accordingly.</p>
-      <% } else { %>
+      <% } else if (status == 'DENIED') { %>
         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
           <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -24,6 +24,15 @@
         </div>
         <h2 class="text-2xl font-bold text-gray-900 mb-2">Visit Denied</h2>
         <p class="text-gray-600">You have denied the visitor's request. They will be notified accordingly.</p>
+      <% } else { %>
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+          <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Unknown Status</h2>
+        <p class="text-gray-600">There was an issue processing your request. Please try again or contact support.</p>
       <% } %>
       
       <div class="mt-6">
