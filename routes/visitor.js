@@ -263,10 +263,11 @@ module.exports = (io) => {
 
           // Create visit record
           console.log('Creating visit record');
+          const lagosCheckIn = moment().tz('Africa/Lagos').format('YYYY-MM-DD HH:mm:ss');
           const [visitResult] = await db
             .query(
-              'INSERT INTO visits(visitor_id, staff_email, reason, visitor_type) VALUES (?, ?, ?, ?)',
-              [visitorId, staff_email, reason, visitorType]
+              'INSERT INTO visits(visitor_id, staff_email, reason, visitor_type, check_in_time) VALUES (?, ?, ?, ?, ?)',
+              [visitorId, staff_email, reason, visitorType, lagosCheckIn]
             );
           const visitId = visitResult.insertId;
 
@@ -403,10 +404,11 @@ module.exports = (io) => {
         }
 
         // Create visit record
+        const lagosCheckIn = moment().tz('Africa/Lagos').format('YYYY-MM-DD HH:mm:ss');
         await db
           .query(
-            'INSERT INTO visits(visitor_id, staff_email, reason) VALUES (?, ?, ?)',
-            [visitor_id, staff_email, reason]
+            'INSERT INTO visits(visitor_id, staff_email, reason, check_in_time) VALUES (?, ?, ?, ?)',
+            [visitor_id, staff_email, reason, lagosCheckIn]
           );
 
         // Prepare email attachments if photo exists
