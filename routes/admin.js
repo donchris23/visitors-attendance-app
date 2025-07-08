@@ -173,7 +173,7 @@ router.get('/simple', isAdmin, async (req, res) => {
         SUM(CASE WHEN status = 'allowed' THEN 1 ELSE 0 END) as approved_visits,
         SUM(CASE WHEN status = 'denied' THEN 1 ELSE 0 END) as denied_visits,
         SUM(CASE WHEN status IS NULL OR status = 'pending' THEN 1 ELSE 0 END) as pending_visits
-      FROM visits
+      FROM visits 
     `);
 
     const [todayVisits] = await db.query(`

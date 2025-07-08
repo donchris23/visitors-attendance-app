@@ -8,6 +8,7 @@ const config = require('../config');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const moment = require('moment-timezone');
 
 module.exports = (io) => {
   const router = express.Router();
@@ -604,9 +605,11 @@ module.exports = (io) => {
   router.post('/checkout/:id', async (req, res) => {
     try {
       const visitId = req.params.id;
+      // Get current time in Africa/Lagos timezone
+      const lagosTime = moment().tz('Africa/Lagos').format('YYYY-MM-DD HH:mm:ss');
       await db.query(
-        'UPDATE visits SET check_out_time = NOW() WHERE id = ?',
-        [visitId]
+        'UPDATE visits SET check_out_time = ? WHERE id = ?',
+        [lagosTime, visitId]
       );
       res.redirect('back');
     } catch (error) {
