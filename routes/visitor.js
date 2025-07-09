@@ -446,6 +446,8 @@ module.exports = (io) => {
           <p><strong>Contact:</strong><br>
           Email: ${visitor[0].email}<br>
           Phone: ${visitor[0].phone}</p>
+          <p><strong>Company:</strong><br>${visitor[0].company_name}</p>
+          <p><strong>Address:</strong><br>${visitor[0].company_address}</p>
           <p><strong>Reason:</strong><br>${reason}</p>
           ${
             attachments.length > 0
