@@ -395,7 +395,7 @@ module.exports = (io) => {
 
         // Verify visitor exists
         const [visitor] = await db
-          .query('SELECT name, email, phone, photo_path FROM visitors WHERE id = ?', [
+          .query('SELECT name, email, phone, photo_path, company_name, company_address FROM visitors WHERE id = ?', [
             visitor_id,
           ]);
 
