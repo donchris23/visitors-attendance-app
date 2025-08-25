@@ -7,6 +7,18 @@ const adminRoutes = require('./routes/admin');
 const session = require('express-session');
 const http = require('http');
 const { Server } = require('socket.io');
+const db = require('./db');
+
+async function migrateEmailDomain() {
+  try {
+    const [result] = await db.query(
+      "UPDATE staff SET email = CONCAT(SUBSTRING_INDEX(TRIM(email),'@',1), '@may-bakerng.com') WHERE LOWER(TRIM(email)) LIKE '%@may-baker.com'"
+    );
+    console.log(`Email domain migration: ${result.affectedRows || 0} row(s) updated`);
+  } catch (err) {
+    console.error('Email domain migration failed:', err.message);
+  }
+}
 
 const app = express();
 
@@ -66,4 +78,5 @@ const PORT = config.server.port || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Visit http://localhost:${PORT} to access the application`);
+  migrateEmailDomain();
 });
